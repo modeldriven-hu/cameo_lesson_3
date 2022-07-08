@@ -21,8 +21,8 @@ public class BrowserAction extends DefaultBrowserAction {
             if (selectedNode.getUserObject() instanceof Package) {
                 var parentPackage = (Package) selectedNode.getUserObject();
 
-                var generator = new ModelStructureGenerator(parentPackage);
-                generator.execute();
+                var generator = new ModelStructureGenerator();
+                generator.execute(parentPackage);
             }
         }
     }
