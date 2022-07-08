@@ -1,6 +1,6 @@
-# Cameo/MagicDraw plugin development - Lesson 2
+# Cameo/MagicDraw plugin development - Lesson 3
 
-This is the second lesson of the series. In this lesson we will learn how to add actions to MagicDraw.
+This is the third lesson of the series. In this lesson we will learn how to work with model elements.p
 
 Reference documentation:
 

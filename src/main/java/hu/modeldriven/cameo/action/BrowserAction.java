@@ -1,8 +1,7 @@
 package hu.modeldriven.cameo.action;
 
-import com.nomagic.magicdraw.core.Application;
 import com.nomagic.magicdraw.ui.browser.actions.DefaultBrowserAction;
-import com.nomagic.magicdraw.uml.BaseElement;
+import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Package;
 
 import java.awt.event.ActionEvent;
 
@@ -19,9 +18,11 @@ public class BrowserAction extends DefaultBrowserAction {
         var selectedNode = tree.getSelectedNode();
 
         if (selectedNode != null) {
-            if (selectedNode.getUserObject() instanceof BaseElement) {
-                var element = (BaseElement) selectedNode.getUserObject();
-                Application.getInstance().getGUILog().showMessage("Selected node: " + element.getHumanName());
+            if (selectedNode.getUserObject() instanceof Package) {
+                var parentPackage = (Package) selectedNode.getUserObject();
+
+                var generator = new ModelStructureGenerator(parentPackage);
+                generator.execute();
             }
         }
     }
