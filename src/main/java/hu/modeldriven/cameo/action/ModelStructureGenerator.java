@@ -8,9 +8,9 @@ import com.nomagic.magicdraw.openapi.uml.SessionManager;
 import com.nomagic.magicdraw.uml.Finder;
 import com.nomagic.uml2.ext.jmi.helpers.CoreHelper;
 import com.nomagic.uml2.ext.jmi.helpers.StereotypesHelper;
+import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.*;
 import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Class;
 import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Package;
-import com.nomagic.uml2.ext.magicdraw.classes.mdkernel.Type;
 import com.nomagic.uml2.impl.ElementsFactory;
 
 public class ModelStructureGenerator {
@@ -42,8 +42,11 @@ public class ModelStructureGenerator {
         addProperty(firstClass);
         addOperation(firstClass);
 
+        var enumeration = createEnumeration(parentPackage);
+
         var secondClass = createClass(parentPackage, "Second class");
         addStereotype(secondClass);
+        addEnumeration(secondClass, enumeration);
 
         createRelation(parentPackage, firstClass, secondClass);
     }
@@ -87,6 +90,38 @@ public class ModelStructureGenerator {
         CoreHelper.setSupplierElement(dependency, firstClass);
         CoreHelper.setClientElement(dependency, secondClass);
         dependency.setOwner(parentPackage);
+    }
+
+    private Enumeration createEnumeration(Package parentPackage) throws ReadOnlyElementException {
+        var myEnum = factory.createEnumerationInstance();
+        myEnum.setName("My enumeration");
+
+        var values = new String[]{"a","b", "c"};
+
+        for (var value : values){
+            var literal = factory.createEnumerationLiteralInstance();
+
+            var valueSpecification = factory.createLiteralStringInstance();
+            valueSpecification.setValue(value);
+
+            literal.setSpecification(valueSpecification);
+            literal.setName(value);
+
+            literal.setEnumeration(myEnum);
+        }
+
+        manager.addElement(myEnum, parentPackage);
+
+        return myEnum;
+    }
+
+    private void addEnumeration(Class mdClass, Enumeration enumeration) throws ReadOnlyElementException {
+        var property = factory.createPropertyInstance();
+        property.setName("myEnumeration");
+        property.setType(enumeration);
+        CoreHelper.setMultiplicity(1, 1, property);
+
+        manager.addElement(property, mdClass);
     }
 
 }
