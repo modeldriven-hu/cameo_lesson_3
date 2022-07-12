@@ -29,10 +29,10 @@ public class ModelStructureGenerator {
         try {
             SessionManager.getInstance().createSession(project, "Creating model elements from lesson 3");
             createModelElements(parentPackage);
+            SessionManager.getInstance().closeSession(project);
         } catch (Exception e) {
             Application.getInstance().getGUILog().showMessage("Exception occured: " + e.getMessage());
-        } finally {
-            SessionManager.getInstance().closeSession(project);
+            SessionManager.getInstance().cancelSession(project);
         }
     }
 
@@ -52,6 +52,7 @@ public class ModelStructureGenerator {
     }
 
     private Class createClass(Package parentPackage, String name) throws ReadOnlyElementException {
+
         var mdClass = factory.createClassInstance();
         mdClass.setName(name);
         manager.addElement(mdClass, parentPackage);
@@ -60,6 +61,7 @@ public class ModelStructureGenerator {
     }
 
     private void addProperty(Class mdClass) throws ReadOnlyElementException {
+
         var stringType = (Type) Finder.byQualifiedName()
                 .find(project, "UML Standard Profile::UML2 Metamodel::PrimitiveTypes::String");
 
@@ -89,14 +91,14 @@ public class ModelStructureGenerator {
         var dependency = factory.createDependencyInstance();
         CoreHelper.setSupplierElement(dependency, firstClass);
         CoreHelper.setClientElement(dependency, secondClass);
-        dependency.setOwner(parentPackage);
+        manager.addElement(dependency, parentPackage);
     }
 
     private Enumeration createEnumeration(Package parentPackage) throws ReadOnlyElementException {
         var myEnum = factory.createEnumerationInstance();
         myEnum.setName("My enumeration");
 
-        var values = new String[]{"a","b", "c"};
+        var values = new String[]{"a", "b", "c"};
 
         for (var value : values){
             var literal = factory.createEnumerationLiteralInstance();
